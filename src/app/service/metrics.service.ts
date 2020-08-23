@@ -10,7 +10,6 @@ import { Observable } from 'rxjs';
 })
 export class MetricsService {
 
-   fcp = 0;
 
   constructor(private http: HttpClient) {
 
@@ -41,11 +40,16 @@ export class MetricsService {
     const windowLoadEvent = performance.loadEventEnd - performance.loadEventStart;
 
     //fcp
+    const firstContentfulPaint = window.performance.getEntriesByType("paint")[0];
+    // Get the timestamp when the paint ocurred
+    const fcp = firstContentfulPaint ? firstContentfulPaint.startTime : 0;
+
     var metrics:any = {};
+
     metrics.ttfb = ttfb;
     metrics.domComplete = domComplete;
     metrics.windowLoadEvent = windowLoadEvent;
-    metrics.fcp = this.fcp;    
+    metrics.fcp = fcp;    
     metrics.date=new Date().toISOString().slice(0,10);
 
     
@@ -53,17 +57,8 @@ export class MetricsService {
     return {metrics};
   }
 
-  cc(){
-    if(typeof(PerformanceObserver)!=='undefined'){ //if browser is supporting
-      const observer = new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) {
-        if(entry.name === 'first-contentful-paint'){
-          this.fcp = entry.startTime;  
-        }
-           
-         }
-        });
-        observer.observe({entryTypes: ['paint']});
-      }
+  getDataFromApi(){
+    return this.http.get(environment.api.getMetrics+'?startDate=2020-07-07&endDate=2020-08-19');
+
   }
 }

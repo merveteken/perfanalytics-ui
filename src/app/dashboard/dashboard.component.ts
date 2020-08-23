@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as Chart from 'chart.js';
+import { MetricsService } from '../service/metrics.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,7 +9,7 @@ import * as Chart from 'chart.js';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor() { }
+  constructor(public merticService: MetricsService) { }
   title = 'PERFORMANCE ANALYTICS';
   canvas: any;
   ctx: any;
@@ -18,7 +19,12 @@ export class DashboardComponent implements OnInit {
   ctx2: any;
   canvas3: any;
   ctx3: any;
+  metricsFromApi: any;
   ngOnInit() {
+     this.merticService.getDataFromApi().subscribe(data => {
+       console.log('data',data);
+       this.metricsFromApi = data;
+     })
     this.canvas = document.getElementById('myChart');
     this.ctx = this.canvas.getContext('2d');
     let myChart = new Chart(this.ctx, {
@@ -144,4 +150,6 @@ export class DashboardComponent implements OnInit {
       },
     });
   }
+
+  
 }
