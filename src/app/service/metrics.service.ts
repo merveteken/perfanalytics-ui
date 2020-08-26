@@ -31,10 +31,8 @@ export class MetricsService {
     // Time To First Byte
     const ttfb = performance.responseStart - performance.requestStart;
 
-
     // Dom load duration
     const domComplete = performance.domComplete;
-
 
     // Window load duration
     const windowLoadEvent = performance.loadEventEnd - performance.loadEventStart;
